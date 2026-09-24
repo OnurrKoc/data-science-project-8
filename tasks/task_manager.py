@@ -6,11 +6,13 @@ def get_contracts_by_region(region: str) -> list:
         "Skellige": ["drowner", "leshen"],
         "Blaviken": ["vampire", "griffin"]
     }
+    return all_contracts[region]
     pass
 
 
 # 2-) reward değeri şu formül ile hesaplanır. FORMULA = base_gold X (1 + difficulty X 0.1)
 def calculate_reward(base_gold: int, difficulty: int) -> float:
+    return base_gold * (1 + difficulty * 0.1)
     pass
 
 
@@ -22,11 +24,13 @@ def get_monster_weakness(monster_name: str) -> list:
         "griffin": ["hybrid oil", "aard"],
         "vampire": ["moon dust", "devil's puffball"]
     }
+    return weaknesses[monster_name.lower()]
     pass
 
 
 # 4-) difficulty değeri 5'ten büyükse veya region 'Blaviken' ise bu fonksiyon 'True' dönmelidir. Diğer şartlarda fonksiyon 'False' dönmelidir.
 def is_high_danger_contract(difficulty: int, region: str) -> bool:
+    return difficulty > 5 or region == 'Blaviken'
     pass
 
 
@@ -34,6 +38,13 @@ def is_high_danger_contract(difficulty: int, region: str) -> bool:
 # Example input: ['ghoul', 'leshen', 'ghoul', 'drowner', 'leshen', 'ghoul']
 # Output: {'ghoul': 3, 'leshen': 2, 'drowner': 1}
 def summarize_monster_data(monsters: list) -> dict:
+    summary = {}
+    for monster in monsters:
+        if monster in summary:
+            summary[monster] = summary[monster] + 1
+        else:
+            summary[monster] = 1
+    return summary
     pass
 
 
@@ -46,6 +57,11 @@ def summarize_monster_data(monsters: list) -> dict:
     # ]
 #  Output: only contracts with reward >= min_reward
 def filter_contracts_by_reward(contracts: list, min_reward: int) -> list:
+    sonuc = []
+    for contract in contracts:
+        if contract["reward"] >= min_reward:
+            sonuc.append(contract)
+    return sonuc
     pass
 
 
@@ -53,6 +69,14 @@ def filter_contracts_by_reward(contracts: list, min_reward: int) -> list:
 # Example input: ['ghoul', 'ghoul', 'leshen', 'drowner', 'ghoul']
 # Output: 'ghoul'
 def get_most_common_monster(monster_list: list) -> str:
+    en_cok = monster_list[0]
+    en_yuksek_sayi = 0
+    for monster in monster_list:
+        sayi = monster_list.count(monster)
+        if sayi > en_yuksek_sayi:
+            en_yuksek_sayi = sayi
+            en_cok = monster
+    return en_cok
     pass
 
 
@@ -63,6 +87,7 @@ def get_most_common_monster(monster_list: list) -> str:
 #     {"id": 3, "monster": "drowner", "difficulty": 1}
 # ]
 def sort_contracts_by_difficulty(contracts: list) -> list:
+    return sorted(contracts, key=lambda x: x["difficulty"])
     pass
 
 
@@ -70,6 +95,7 @@ def sort_contracts_by_difficulty(contracts: list) -> list:
 # reward parametresi orijanl fiyatı, lambda discont ise yapılcak olan indirimi lmabda fonksiyonu olarak alır.
 # bu işlemi yapıp en son fiyatı dönen fonksiyonu yazınız.  
 def apply_discount(reward: float, lambda_discount) -> float:
+    return lambda_discount(reward)
     pass
 
 
@@ -82,4 +108,12 @@ def apply_discount(reward: float, lambda_discount) -> float:
 #     {"id": 4, "region": "Novigrad"}
 # ]
 def count_contracts_by_region(contracts: list) -> dict:
+    region_counts = {}
+    for contract in contracts:
+        region = contract["region"]
+        if region in region_counts:
+            region_counts[region] = region_counts[region] + 1
+        else:
+            region_counts[region] = 1
+    return region_counts
     pass
